@@ -1,0 +1,222 @@
+#page_login{
+    display: block;
+}
+
+#page_main{
+    display: none;
+}
+
+#encabezado{
+    height: 135px;
+    border: solid 2px #000000;
+    background-color: #ffffff;
+    margin-top: 50px;
+    margin-left: 37px;
+    margin-right: 37px;
+}
+
+.titulo{
+    width: 319.2px;
+    height: 48.6px;
+    margin: 40px;
+    font-size: 50px;
+    color: #130086;
+}
+
+#foto_profesor{
+    float: left;
+}
+
+#profesor{
+    font-size: 30px;
+    font-family: 'Courier New', Courier, monospace;
+    color: gray;
+    margin-left: 37px;
+    margin-top: 50px;
+}
+
+.img_prof{
+    vertical-align: middle;
+    height: 80px;
+    width: 80px;
+}
+
+#nprof{
+  padding: 20px;
+}
+
+#btn_nueva_asig{
+    margin-left: 63px;
+    margin-top: 200px;
+    width: 200px;
+    height: 71px;
+    background-color: #0007a7;
+    border-radius: 20px;
+    cursor: pointer;
+    float: left;
+}
+
+.texto_btn{
+    color: white;
+    margin: 25px;
+}
+  
+  .calendar {
+    position: relative;
+    width: 300px;
+    background-color: #fff;
+    box-sizing: border-box;
+    box-shadow: 0 5px 50px rgba(#000, 0.5);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-left: 60%;
+  }
+  
+  .calendar__picture {
+    position: relative;
+    height: 90px;
+    padding: 20px;
+    color: #fff;
+    background: #262626;
+    text-shadow: 0 2px 2px rgba(#000, 0.2);
+    box-sizing: border-box;
+  }
+  .calendar__picture:before {
+      content: "";
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      position: absolute;
+      background: linear-gradient(to top, rgba(#000, 0.25), rgba(#000, 0.1));
+    }
+    
+    h2 {
+      margin: 0;
+    }
+    
+    h3 {
+      margin: 0;
+      font-weight: 500;
+    }
+  
+  
+  .calendar__date {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(25px, 1fr));
+    grid-gap: 10px;
+    box-sizing: border-box;
+  }
+  
+  .calendar__day {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 25px;
+    font-weight: 600;
+    color: #262626;
+  }
+.calendar__day:nth-child(7) {
+      color: #ff685d;
+    }
+  
+  .calendar__number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 25px;
+    color: #262626;
+  }
+  .calendar__number:nth-child(7n) {
+      color: #ff685d;
+      font-weight: 700;
+    }
+    
+    .calendar__number--current,
+    .calendar__number:hover {
+      background-color: #009688;
+      color: #fff !important;
+      font-weight: 700;
+      cursor: pointer;
+    }
+  
+
+#asignaturas{
+  border: solid 2px gray;
+  border-radius: 20px;
+  width: 50%;
+  margin-left: 37px;
+}
+
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 50%;
+  margin-left: 37px;
+}
+
+td, th {
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
+.overlay{
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.7);
+  transition: opacity 500ms;
+  visibility: hidden;
+  opacity: 0;
+}
+
+.overlay:target {
+  visibility: visible;
+  opacity: 1;
+}
+
+#popupBody{
+  width: 46%;
+  padding: 2%;
+  border-radius: 15px;
+  box-shadow: 0 0 5px #CCC;
+  background: #FFF;
+  position: relative;
+  margin: 10% auto;
+  transition: all 5s ease-in-out;
+  text-align: center;
+}
+
+#cerrar{
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  font-size: 30px;
+  font-weight: bold;
+  text-decoration: none;
+  color: grey;
+  transition: all 200ms;
+}
+
+#form1input1, #form1input2{
+  border-radius: 20px;
+  margin: 20px;
+  padding: 20px;
+}
+
+#form1submit{
+  width: 200px;
+  height: 71px;
+  background-color: #0007a7;
+  border-radius: 20px;
+  cursor: pointer;
+  margin: 20px;
+  color: white;
+}

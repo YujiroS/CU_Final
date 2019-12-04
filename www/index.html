@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+    <head>
+        <!--
+        Customize this policy to fit your own app's needs. For more guidance, see:
+            https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
+        Some notes:
+            * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+            * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+            * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+                * Enable inline JS: add 'unsafe-inline' to default-src
+        -->
+        <meta http-equiv="Content-Security-Policy" content="
+        default-src 
+            'self' 
+                data: gap: wss:
+                https://*.gstatic.com
+                https://*.googleapis.com
+                https://apis.google.com
+                https://practicafinalubicua.firebaseapp.com
+                https://*.firebaseio.com
+                'unsafe-inline'; 
+            style-src 
+                'self' 
+                'unsafe-inline'; 
+            media-src 
+                *; 
+            img-src 
+                'self' 
+                data: content:;">
+
+        <meta name="format-detection" content="telephone=no">
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+        <link rel="stylesheet" type="text/css" href="css/index.css">
+        <title>Hello World</title>
+    </head>
+    <body>
+        <div id="page_login">
+            <button id="btn_google_login">Acceder con Google</button>
+        </div>
+        <div id="page_main">
+            <div id="encabezado">
+                <p class="titulo">Aula Global</p>
+            </div>
+            <h1 id="profesor">
+                <a id="foto_profesor">
+                    <img class="img_prof" src="img/logo.png" alt="Profesor">
+                </a>
+                <div id="nprof"></div>
+            </h1>
+            <div>
+                <a id="btn_nueva_asig" href="#page_añadir_asign"><p class="texto_btn">Añadir asignatura</p></a>
+                <!--CALENDARIO-->
+                <div class="calendar">
+                    <div class="calendar__picture">
+                    <h2 id="date">18, Sunday</h2>
+                    <h3 id="month">November</h3>
+                    </div>
+                    <div class="calendar__date">
+                    <div class="calendar__day">M</div>
+                    <div class="calendar__day">T</div>
+                    <div class="calendar__day">W</div>
+                    <div class="calendar__day">T</div>
+                    <div class="calendar__day">F</div>
+                    <div class="calendar__day">S</div>
+                    <div class="calendar__day">S</div>
+                    <div class="calendar__number"></div>
+                    <div class="calendar__number"></div>
+                    <div class="calendar__number"></div>
+                    <div class="calendar__number"></div>
+                    <div class="calendar__number"></div>
+                    <div class="calendar__number"></div>
+                    <div class="calendar__number">1</div>
+                    <div class="calendar__number">2</div>
+                    <div class="calendar__number">3</div>
+                    <div class="calendar__number">4</div>
+                    <div class="calendar__number">5</div>
+                    <div class="calendar__number">6</div>
+                    <div class="calendar__number">7</div>
+                    <div class="calendar__number">8</div>
+                    <div class="calendar__number">9</div>
+                    <div class="calendar__number">10</div>
+                    <div class="calendar__number">11</div>
+                    <div class="calendar__number">12</div>
+                    <div class="calendar__number">13</div>
+                    <div class="calendar__number">14</div>
+                    <div class="calendar__number">15</div>
+                    <div class="calendar__number">16</div>
+                    <div class="calendar__number">17</div>
+                    <div class="calendar__number">18</div>
+                    <div class="calendar__number">19</div>
+                    <div class="calendar__number">20</div>
+                    <div class="calendar__number">21</div>
+                    <div class="calendar__number">22</div>
+                    <div class="calendar__number">23</div>
+                    <div class="calendar__number">24</div>
+                    <div class="calendar__number">25</div>
+                    <div class="calendar__number">26</div>
+                    <div class="calendar__number">27</div>
+                    <div class="calendar__number">28</div>
+                    <div class="calendar__number">29</div>
+                    <div class="calendar__number">30</div>
+                    <div class="calendar__number">31</div>
+                    </div>
+                </div>
+            </div>
+            <div id="asignaturas">
+                <h4 style="margin-left: 37px">Asignaturas</h4>
+            </div>
+            <!--TANTO EL BORRADO COMO EL AÑADIDO DEBERIA HACERSE CON UN ID PARA CADA ITEM-->
+            <table>
+                <tr>
+                  <td>Computacion Ubicua</td>
+                  <td>Borrar</td>
+                </tr>
+                <tr>
+                  <td>Análisis de Datos</td>
+                  <td>Borrar</td>
+                </tr>
+            </table>
+            <!--Pagina donde se mostraran las clases disponibles de cada asignatura-->
+            <div id="page_asignaturas">
+                
+            </div>
+            <!--Pagina donde se podrán añadir nuevas asignaturas-->
+            <div id="page_añadir_asign" class="overlay">
+                <div id="popupBody">
+                    <h1>Añadir Asignatura</h1>
+                    <a id="cerrar" href="#">&times;</a>
+                    <div class="popupContent">
+                        <form action="/action_page.php">
+                            <input id="form1input1" type="text" name="nombre_asignatura" value="Nombre asignatura"><br>
+                            <input id="form1input2" type="file" name="lista_clase" value="Lista de clase"><br>
+                            <input id="form1submit" type="submit" value="Generar">
+                            <p>NOTA: Recuerda añadir el fichero que contenga la lista de alumnos de la asignatura.</p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!--Pagina donde podremos añadir nuevas clases-->
+            <div id="page_añadir_clase">
+                
+            </div>
+        </div>
+        <script type="text/javascript" src="cordova.js"></script>
+        <!-- The core Firebase JS SDK is always required and must be listed first -->
+        <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-auth.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-database.js"></script>
+
+        <!-- TODO: Add SDKs for Firebase products that you want to use
+            https://firebase.google.com/docs/web/setup#available-libraries -->
+
+        <script>
+        // Your web app's Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyCVjTvN_KI4q02zaubDes4EP1-beI4TQYM",
+            authDomain: "practicafinalubicua.firebaseapp.com",
+            databaseURL: "https://practicafinalubicua.firebaseio.com",
+            projectId: "practicafinalubicua",
+            storageBucket: "practicafinalubicua.appspot.com",
+            messagingSenderId: "756419769886",
+            appId: "1:756419769886:web:b2155dae77cd024ac7200f"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        </script>
+        <script type="text/javascript" src="js/index.js"></script>
+    </body>
+</html>
