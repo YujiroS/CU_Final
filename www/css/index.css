@@ -6,7 +6,11 @@
     display: none;
 }
 
-#encabezado{
+#page_computacion_ubicua{
+  display: none;
+}
+
+.encabezado{
     height: 135px;
     border: solid 2px #000000;
     background-color: #ffffff;
@@ -16,7 +20,6 @@
 }
 
 .titulo{
-    width: 319.2px;
     height: 48.6px;
     margin: 40px;
     font-size: 50px;
@@ -54,6 +57,17 @@
     border-radius: 20px;
     cursor: pointer;
     float: left;
+}
+
+#btn_nueva_clase{
+  margin-left: 63px;
+  margin-top: 200px;
+  width: 200px;
+  height: 71px;
+  background-color: #0007a7;
+  border-radius: 20px;
+  cursor: pointer;
+  float: left;
 }
 
 .texto_btn{
@@ -142,7 +156,7 @@
     }
   
 
-#asignaturas{
+.header_table{
   border: solid 2px gray;
   border-radius: 20px;
   width: 50%;
@@ -159,6 +173,8 @@ table {
 td, th {
   text-align: left;
   padding: 8px;
+  cursor: pointer;
+  text-decoration: underline;
 }
 
 tr:nth-child(even) {
@@ -182,7 +198,7 @@ tr:nth-child(even) {
   opacity: 1;
 }
 
-#popupBody{
+.popupBody{
   width: 46%;
   padding: 2%;
   border-radius: 15px;
@@ -220,3 +236,4 @@ tr:nth-child(even) {
   margin: 20px;
   color: white;
 }
+
