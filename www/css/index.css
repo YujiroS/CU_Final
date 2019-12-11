@@ -59,6 +59,14 @@
     float: left;
 }
 
+#classes{
+    left: 10px;
+}
+
+#participants{
+    left: 10px;
+}
+
 #btn_nueva_clase{
   margin-left: 63px;
   margin-top: 200px;
@@ -67,7 +75,19 @@
   background-color: #0007a7;
   border-radius: 20px;
   cursor: pointer;
-  float: left;
+  left: 10px;
+}
+
+#btn_to_aula{
+    margin-left: 63px;
+    margin-top: 200px;
+    width: 200px;
+    height: 71px;
+    background-color: #0007a7;
+    border-radius: 20px;
+    cursor: pointer;
+    bottom: 10px;
+    left: 10px;
 }
 
 .texto_btn{

@@ -90,13 +90,16 @@ document.addEventListener('deviceready', function(){
                     tr.appendChild(btn_del);
                     tr.appendChild(dl);
 
+                    td.addEventListener('click',()=> {
+                        toClassInterface(td.innerText, child_snapshot);
+                    });
 
                     btn_del.addEventListener('click', function(event){
                         console.log(event);
                         let asignatura_key = event.srcElement.value;
                         ref.child(asignatura_key).remove();
                     });
-                })
+                });
 
                 ref.on('child_removed', function(child_snapshot) {
                     document.getElementById("asignatura_" + child_snapshot.key).remove();
@@ -107,6 +110,93 @@ document.addEventListener('deviceready', function(){
         }).catch((error)=>{
             console.log(error);
         });
+    }
+
+    function toClassInterface(classname, snapshot){
+        load_class_data(snapshot.key)
+        document.getElementById("title").textContent = "Asignatura";
+        document.getElementById("btn_nueva_asig").style.display ="none";
+        document.getElementById("header_table").style.display ="none";
+        document.getElementById("table").style.display ="none";
+        document.getElementById("profesor").style.display ="none";
+
+        class_name = document.getElementById("nombre_clase");
+        class_name.style.display = "block";
+        class_name.innerText = classname;
+
+
+        document.getElementById("classes").style.display ="block";
+        document.getElementById("add_class").style.display ="block";
+        document.getElementById("participants").style.display ="block";
+
+        document.getElementById("to_aula").style.display ="block";
+        back_to_aula = document.getElementById("btn_to_aula");
+        back_to_aula.addEventListener('click', () => {
+            toAulaGlobalInterface();
+        });
+    }
+
+    function load_class_data(key) {
+        let ref = db.ref("users/" + user.uid + "/asignaturas/"+ key + "/lista clase/");
+        return ref.once('value').then(function (snapshot) {
+            console.log("VAL: ");
+            var entries = [];
+            snapshot.forEach(function (userSnapshot) {
+                entries.push(snapshot.val());
+            })
+            console.log(entries[0]);
+
+            //Loads data into table
+            let table = document.getElementById("table_classes_participants");
+
+
+            for (let i = 1; i < Object.values(entries[0]).length; i++) {
+                let row = table.insertRow();
+                let entry = row.insertCell(0)
+                let nia = row.insertCell(1);
+                let nombre = row.insertCell(2);
+                let apellido = row.insertCell(3);
+                let correo = row.insertCell(4);
+                let ausencias = row.insertCell(5);
+
+                entry.innerHTML = ""+i;
+                nia.innerHTML = Object.values(entries[0])[i].NIU;
+                nombre.innerHTML = Object.values(entries[0])[i].Nombre;
+                apellido.innerHTML = Object.values(entries[0])[i].Apellidos;
+                correo.innerHTML = Object.values(entries[0])[i].Correo;
+                ausencias.innerHTML = Object.values(entries[0])[i].Ausencias;
+            }
+        })
+    }
+
+    function update_data(key) {
+        let root_ref = db.ref("users/" + user.uid);
+        root_ref.on('value', function (snapshot) {
+
+        })
+
+    }
+
+    function toAulaGlobalInterface(){
+        document.getElementById("nombre_clase").style.display ="none";
+        document.getElementById("classes").style.display ="none";
+        document.getElementById("add_class").style.display ="none";
+        document.getElementById("participants").style.display ="none";
+        document.getElementById("to_aula").style.display ="none";
+
+        let table = document.getElementById("table_classes_participants");
+        let border = table.rows.length;
+        for(let i = 1; i < border; i++){
+            console.log("One line deleted!");
+            console.log("Lines remaining: " + table.rows.length);
+            table.deleteRow(1);
+        }
+
+        document.getElementById("title").textContent = "Aula Global";
+        document.getElementById("btn_nueva_asig").style.display ="block";
+        document.getElementById("header_table").style.display ="block";
+        document.getElementById("table").style.display ="block";
+        document.getElementById("profesor").style.display ="block";
     }
 
     const n = new Date();

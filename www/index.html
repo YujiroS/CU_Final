@@ -59,7 +59,7 @@
         </div>
         <div id="page_main">
             <div class="encabezado">
-                <p class="titulo">Aula Global</p>
+                <p id="title" class="titulo">Aula Global</p>
             </div>
             <h1 id="profesor">
                 <a id="foto_profesor">
@@ -67,6 +67,7 @@
                 </a>
                 <div id="nprof"></div>
             </h1>
+            <h3 id="nombre_clase" style="display:none">Test</h3>
             <div>
                 <a id="btn_nueva_asig" href="#page_añadir_asign"><p class="texto_btn">Añadir asignatura</p></a>
                 <!--CALENDARIO-->
@@ -125,7 +126,7 @@
             </div>
 
             
-            <div class="header_table">
+            <div id="header_table" class="header_table">
                 <h4 style="margin-left: 37px">Asignaturas</h4>
             </div>
             <!--TANTO EL BORRADO COMO EL AÑADIDO DEBERIA HACERSE CON UN ID PARA CADA ITEM-->
@@ -246,11 +247,55 @@
                 </div>
             </div>-->
 
+        <!------------Class page ----------------------------------------------------------------->
+
+        <div id="classes" style="display:none">
+            <h4>Clases</h4>
+            <div id="div_table_clases" style="overflow-y: auto;">
+                <table id="table_classes">
+                    <tr>
+                        <th>Entry</th>
+                        <th>Mes</th>
+                        <th>Hora</th>
+                        <th>Aula</th>
+                        <th>Codigo QR</th>
+                        <th>Lista de alumnos</th>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+
+        <div id="add_class" style="display:none">
+            <button id="btn_nueva_clase" class="texto_btn">
+                Añadir Clase
+            </button>
+        </div>
+
+        <div id="participants" style="display:none">
+            <h4>Lista de clase</h4>
+            <table id="table_classes_participants">
+                <th>Entry</th>
+                <th>NIA</th>
+                <th>Nombre</th>
+                <th>Apellidos</th>
+                <th>Correo</th>
+                <th>Ausencias</th>
+            </table>
+        </div>
+
+        <div id="to_aula" style="display:none">
+            <button id="btn_to_aula" class="texto_btn">
+                Atrás
+            </button>
+        </div>
             <!--Pagina donde podremos añadir nuevas clases-->
             <div id="page_añadir_clase" class="overlay">
                 
             </div>
         </div>
+
+
         <script type="text/javascript" src="cordova.js"></script>
         <!-- The core Firebase JS SDK is always required and must be listed first -->
         <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-app.js"></script>
