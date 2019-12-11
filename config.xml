@@ -27,5 +27,6 @@
     <plugin name="cordova-universal-links-plugin" spec="https://github.com/GEDYSIntraWare/cordova-universal-links-plugin.git" />
     <plugin name="cordova-plugin-browsertab" spec="~0.2.0" />
     <plugin name="cordova-plugin-inappbrowser" spec="~3.1.0" />
+    <plugin name="cordova-plugin-qrcodejs" spec="https://github.com/MenelicSoftware/cordova-plugin-qrcodejs" />
     <engine name="browser" spec="^5.0.4" />
 </widget>
