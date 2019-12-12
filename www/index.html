@@ -249,6 +249,8 @@
 
         <!------------Class page ----------------------------------------------------------------->
 
+        <div id="class_page">
+
         <div id="classes" style="display:none">
             <h4>Clases</h4>
             <div id="div_table_clases" style="overflow-y: auto;">
@@ -267,9 +269,9 @@
 
 
         <div id="add_class" style="display:none">
-            <button id="btn_nueva_clase" class="texto_btn">
+            <a id="btn_nueva_clase"  href="#page_añadir_clase" class="texto_btn">
                 Añadir Clase
-            </button>
+            </a>
         </div>
 
         <div id="participants" style="display:none">
@@ -289,12 +291,39 @@
                 Atrás
             </button>
         </div>
+
+
+
             <!--Pagina donde podremos añadir nuevas clases-->
             <div id="page_añadir_clase" class="overlay">
-                
+                <div class="popupBody">
+                    <h1>Añadir Clase</h1>
+                    <a id="cerrar_clase" href="#">&times;</a>
+                    <div class="popupContent">
+                        <input id="form2input1" type="text" pattern="[0-1][0-9]/[0-3][0-9]/[0-2][0-9]:[0-5][0-9]" value="MM/DD/HH:mm"><br>
+                        <input id="form2input2" type="text" value="Aula de clase"><br>
+                        <a id="form2submit" href="#">Generar</a>
+                    </div>
+                </div>
+            </div>
+
+        <div id="page_show_class_participation" class="overlay">
+            <div class="popupBody">
+                <h1>Añadir Clase</h1>
+                <a id="cerrar_participation" href="#">&times;</a>
+                <div class="popupContent">
+                    <table id="table_class_participation">
+                        <tr>
+                            <th>Entry</th>
+                            <th>Alumno</th>
+                            <th>Presentado</th>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
 
+        </div>
 
         <script type="text/javascript" src="cordova.js"></script>
         <!-- The core Firebase JS SDK is always required and must be listed first -->

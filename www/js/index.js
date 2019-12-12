@@ -113,7 +113,8 @@ document.addEventListener('deviceready', function(){
     }
 
     function toClassInterface(classname, snapshot){
-        load_class_data(snapshot.key)
+        load_student_data(snapshot.key);
+        load_horario_data(snapshot.key);
         document.getElementById("title").textContent = "Asignatura";
         document.getElementById("btn_nueva_asig").style.display ="none";
         document.getElementById("header_table").style.display ="none";
@@ -126,7 +127,40 @@ document.addEventListener('deviceready', function(){
 
 
         document.getElementById("classes").style.display ="block";
-        document.getElementById("add_class").style.display ="block";
+        let btn_class = document.getElementById("add_class");
+        btn_class.style.display ="block";
+
+        let submit_class = document.getElementById("form2submit");
+        submit_class.addEventListener('click', () => {
+            ref = db.ref("users/" + user.uid + "/asignaturas/"+ asignatura + "/lista horarios/");
+            let date = document.getElementById("form2input1").value;
+            let table = document.getElementById("table_classes_participants");
+            let students = [];
+            for(let i = 1; i < table.rows.length; i++){
+                students.push({
+                    Alumno: table.rows[i].cells[1].innerHTML,
+                    Presentado: "NO"
+                });
+            }
+            let clase = {
+            Mes:  date.split("/")[0],
+            Dia: date.split("/")[1],
+            Hora: date.split("/")[2],
+            Aula: document.getElementById("form2input2").value,
+            QR: create_qr(),
+            Presencia: students
+        };
+           ref.push(clase);
+
+           let tempEmptyTable = doc.getElementById("table_classes");
+           for(let i = 1; i < tempEmptyTable.rows.length; i++){
+               tempEmptyTable.deleteRow(1);
+           }
+           load_horario_data(asignatura);
+        });
+
+            document.querySelector('#page_main').style.display = 'block';
+            document.querySelector('#page_login').style.display = 'none';
         document.getElementById("participants").style.display ="block";
 
         document.getElementById("to_aula").style.display ="block";
@@ -136,15 +170,89 @@ document.addEventListener('deviceready', function(){
         });
     }
 
-    function load_class_data(key) {
+    function create_qr() {
+        return "TODO";
+    }
+
+    function load_horario_data(key){
+        let ref = db.ref("users/" + user.uid + "/asignaturas/"+ key + "/lista horarios/");
+        return ref.once('value').then(function (snapshot) {
+            let entries = [];
+            snapshot.forEach(function () {
+                entries.push(snapshot.val());
+            });
+            let other = [];
+            /*entries.forEach(function () {
+                other.push(entries.val());
+            })*/
+
+            let table = document.getElementById("table_classes");
+
+            for(let i = 1; i <= Object.values(entries[0]).length; i++){
+                let value = Object.values(entries[0])[i-1];
+                let row = table.insertRow();
+                let entry = row.insertCell(0);
+                let mes = row.insertCell(1);
+                let dia = row.insertCell(2);
+                let hora = row.insertCell(3);
+                let aula = row.insertCell(4);
+                let codigo = row.insertCell(5);
+                let alumnos = row.insertCell(6);
+
+                entry.innerHTML = "" + i;
+                mes.innerHTML = value.Mes;
+                dia.innerHTML = value.Dia;
+                hora.innerHTML = value.Hora;
+                aula.innerHTML = value.Aula;
+                codigo.innerHTML = "TODO Hyperlink or download";
+
+                let popUpContainer = document.createElement("div")
+                popUpContainer.className = "overlay";
+                popUpContainer.id = "alumnos_nr" + i;
+                let divPopup = document.createElement("div");
+                divPopup.className = "popupBody";
+                let headline = document.createElement("h1");
+                headline.textContent = "Participation";
+                let cerrar = document.createElement("a");
+                cerrar.href="#";
+                cerrar.text="x";
+                let popUpContent = document.createElement("div");
+                popUpContent.className = "popupContent";
+                let participationTable = document.createElement("table");
+                let tableHeader = participationTable.insertRow();
+                tableHeader.insertCell(0).textContent = "Entry";
+                tableHeader.insertCell(1).textContent = "Alumno";
+                tableHeader.insertCell(2).textContent = "Presentado";
+
+                for(let i = 1; i <= value.Presencia.length; i++){
+                    let row_participants = participationTable.insertRow();
+                    let entry_alumnos = row_participants.insertCell(0);
+                    entry_alumnos.innerHTML = ""+i;
+                    row_participants.insertCell(1).innerHTML = value.Presencia[i-1].Alumno;
+                    row_participants.insertCell(2).innerHTML = value.Presencia[i-1].Presentado;
+                }
+                popUpContent.appendChild(participationTable);
+                divPopup.appendChild(headline);
+                divPopup.appendChild(cerrar);
+                divPopup.appendChild(popUpContent);
+                popUpContainer.appendChild(divPopup);
+
+                document.getElementById("class_page").appendChild(popUpContainer);
+                let open_alumnos = document.createElement("a");
+                open_alumnos.href = "#alumnos_nr" + i;
+                open_alumnos.text = "Mostrar";
+                alumnos.appendChild(open_alumnos);
+            }
+        })
+    }
+
+    function load_student_data(key) {
         let ref = db.ref("users/" + user.uid + "/asignaturas/"+ key + "/lista clase/");
         return ref.once('value').then(function (snapshot) {
-            console.log("VAL: ");
-            var entries = [];
-            snapshot.forEach(function (userSnapshot) {
+            let entries = [];
+            snapshot.forEach(function () {
                 entries.push(snapshot.val());
-            })
-            console.log(entries[0]);
+            });
 
             //Loads data into table
             let table = document.getElementById("table_classes_participants");
@@ -169,14 +277,6 @@ document.addEventListener('deviceready', function(){
         })
     }
 
-    function update_data(key) {
-        let root_ref = db.ref("users/" + user.uid);
-        root_ref.on('value', function (snapshot) {
-
-        })
-
-    }
-
     function toAulaGlobalInterface(){
         document.getElementById("nombre_clase").style.display ="none";
         document.getElementById("classes").style.display ="none";
@@ -187,9 +287,13 @@ document.addEventListener('deviceready', function(){
         let table = document.getElementById("table_classes_participants");
         let border = table.rows.length;
         for(let i = 1; i < border; i++){
-            console.log("One line deleted!");
-            console.log("Lines remaining: " + table.rows.length);
             table.deleteRow(1);
+        }
+
+        let table_part = document.getElementById("table_classes");
+        border = table_part.rows.length;
+        for(let i = 1; i < border; i++){
+            table_part.deleteRow(1);
         }
 
         document.getElementById("title").textContent = "Aula Global";

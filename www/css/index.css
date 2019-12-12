@@ -241,13 +241,13 @@ tr:nth-child(even) {
   transition: all 200ms;
 }
 
-#form1input1, #form1input2{
+#form1input1, #form1input2, #form2input1, #form2input2{
   border-radius: 20px;
   margin: 20px;
   padding: 20px;
 }
 
-#form1submit{
+#form1submit, #form2submit{
   width: 200px;
   height: 71px;
   background-color: #0007a7;
