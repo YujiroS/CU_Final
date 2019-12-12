@@ -176,7 +176,7 @@ document.addEventListener('deviceready', function(){
             Dia: date.split("/")[1],
             Hora: date.split("/")[2],
             Aula: document.getElementById("form2input2").value,
-            QR: create_qr(),
+            QR: "TOTO",
             Presencia: students
         };
         console.log("Before push");
@@ -194,8 +194,12 @@ document.addEventListener('deviceready', function(){
         load_horario_data(chosen_asignatura);
     }
 
-    function create_qr() {
-        return "TODO";
+    function create_qr(userid, asignatura, clase) {
+        //Crea la imagen del QR con el id del usuario, key de la asignatura y de la clase
+        cordova.plugins.qrcodejs.encode('TEXT_TYPE', userid + " " + asignatura + " " + clase, (base64EncodedQRImage) => {
+            console.info('QRCodeJS response is ' + base64EncodedQRImage);
+            return base64EncodedQRImage;
+        });
     }
 
     /**
@@ -207,7 +211,7 @@ document.addEventListener('deviceready', function(){
      * @returns {PromiseLike<any> | Promise<any>}
      */
     function load_horario_data(key){
-        let ref = db.ref("users/" + user.uid + "/asignaturas/"+ key + "/lista horarios/");
+        let ref = db.ref("users/" + user.uid + "/asignaturas/" + key + "/lista horarios/");
         return ref.once('value').then(function (snapshot) {
             let entries = [];
             snapshot.forEach(function () {
@@ -232,7 +236,16 @@ document.addEventListener('deviceready', function(){
                 dia.innerHTML = value.Dia;
                 hora.innerHTML = value.Hora;
                 aula.innerHTML = value.Aula;
-                codigo.innerHTML = "TODO Hyperlink or download";
+                link_download = document.createElement("a");
+                
+                cordova.plugins.qrcodejs.encode('TEXT_TYPE', user.uid + " " + key + " " + snapshot.key, (base64EncodedQRImage) => {
+                    //console.info('QRCodeJS response is ' + base64EncodedQRImage);
+                    link_download.innerHTML = "Descargar";
+                    link_download.href = base64EncodedQRImage;
+                    link_download.download = "qr.png";
+                    codigo.append(link_download);
+                });
+
 
                 //Creation of PopUp Window
                 let popUpContainer = document.createElement("div")
@@ -285,7 +298,7 @@ document.addEventListener('deviceready', function(){
      * @returns {PromiseLike<any> | Promise<any>}
      */
     function load_student_data(key) {
-        let ref = db.ref("users/" + user.uid + "/asignaturas/"+ key + "/lista clase/");
+        let ref = db.ref("users/" + user.uid + "/asignaturas/" + key + "/lista clase/");
         return ref.once('value').then(function (snapshot) {
             let entries = [];
             snapshot.forEach(function () {
