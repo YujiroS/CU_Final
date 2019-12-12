@@ -67,7 +67,7 @@
                 </a>
                 <div id="nprof"></div>
             </h1>
-            <h3 id="nombre_clase" style="display:none">Test</h3>
+            <h2 id="nombre_clase" style="display:none"></h2>
             <div>
                 <a id="btn_nueva_asig" href="#page_añadir_asign"><p class="texto_btn">Añadir asignatura</p></a>
                 <!--CALENDARIO-->
@@ -249,15 +249,18 @@
 
         <!------------Class page ----------------------------------------------------------------->
 
-        <div id="class_page">
+        <div id="class_page" style="display: none">
 
-        <div id="classes" style="display:none">
-            <h4>Clases</h4>
-            <div id="div_table_clases" style="overflow-y: auto;">
+        <div id="classes">
+            <div class="table_name_container">
+                <h4 class="table_declarer">Clases</h4>
+            </div>
+            <div id="div_table_clases" style="overflow-y: auto;" class="scroll_table">
                 <table id="table_classes">
                     <tr>
                         <th>Entry</th>
                         <th>Mes</th>
+                        <th>Dia</th>
                         <th>Hora</th>
                         <th>Aula</th>
                         <th>Codigo QR</th>
@@ -268,15 +271,17 @@
         </div>
 
 
-        <div id="add_class" style="display:none">
+        <div id="add_class">
             <a id="btn_nueva_clase"  href="#page_añadir_clase" class="texto_btn">
                 Añadir Clase
             </a>
         </div>
 
-        <div id="participants" style="display:none">
-            <h4>Lista de clase</h4>
-            <table id="table_classes_participants">
+        <div id="participants">
+            <div class="table_name_container">
+                <h4 class="table_declarer">Lista de clase</h4>
+            </div>
+            <table id="table_classes_participants" class="scroll_table">
                 <th>Entry</th>
                 <th>NIA</th>
                 <th>Nombre</th>
@@ -286,13 +291,11 @@
             </table>
         </div>
 
-        <div id="to_aula" style="display:none">
+        <div id="to_aula">
             <button id="btn_to_aula" class="texto_btn">
                 Atrás
             </button>
         </div>
-
-
 
             <!--Pagina donde podremos añadir nuevas clases-->
             <div id="page_añadir_clase" class="overlay">
