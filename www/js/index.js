@@ -239,6 +239,7 @@ document.addEventListener('deviceready', function(){
                 aula.innerHTML = value.Aula;
                 link_download = document.createElement("a");
                 
+                //Creacion de QR, contiene id de usuario, clave de asignatura y de clase, separados por espacios
                 cordova.plugins.qrcodejs.encode('TEXT_TYPE', user.uid + " " + key + " " + snapshot.key, (base64EncodedQRImage) => {
                     //console.info('QRCodeJS response is ' + base64EncodedQRImage);
                     link_download.innerHTML = "Descargar";
@@ -299,18 +300,17 @@ document.addEventListener('deviceready', function(){
      * @returns {PromiseLike<any> | Promise<any>}
      */
     function load_student_data(key) {
+
         let ref = db.ref("users/" + user.uid + "/asignaturas/" + key + "/lista clase/");
-        return ref.once('value').then(function (snapshot) {
-            let entries = [];
-            snapshot.forEach(function () {
-                entries.push(snapshot.val());
-            });
+        let table = document.getElementById("table_classes_participants");
 
-            //Loads data into table
-            let table = document.getElementById("table_classes_participants");
+        ref.on('value', function (snapshot) {
+            //let entries = [];
+            console.log(snapshot.val());
+            var index = 0;
+            snapshot.forEach(function (data) {
+                var student = data.val();
 
-
-            for (let i = 1; i < Object.values(entries[0]).length; i++) {
                 let row = table.insertRow();
                 let entry = row.insertCell(0)
                 let nia = row.insertCell(1);
@@ -319,13 +319,15 @@ document.addEventListener('deviceready', function(){
                 let correo = row.insertCell(4);
                 let ausencias = row.insertCell(5);
 
-                entry.innerHTML = ""+i;
-                nia.innerHTML = Object.values(entries[0])[i].NIU;
-                nombre.innerHTML = Object.values(entries[0])[i].Nombre;
-                apellido.innerHTML = Object.values(entries[0])[i].Apellidos;
-                correo.innerHTML = Object.values(entries[0])[i].Correo;
-                ausencias.innerHTML = Object.values(entries[0])[i].Ausencias;
-            }
+                entry.innerHTML = "" + index;
+                nia.innerHTML = student.NIU;
+                nombre.innerHTML = student.Nombre;
+                apellido.innerHTML = student.Apellidos;
+                correo.innerHTML = student.Correo;
+                ausencias.innerHTML = student.Ausencias;
+                index++;
+            });
+
         })
     }
 
