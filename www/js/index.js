@@ -41,7 +41,6 @@ document.addEventListener('deviceready', function(){
                     let tr = document.createElement('tr');
                     let td = document.createElement('td');
                     let btn_del = document.createElement('button');
-                    let dl = document.createElement('a');
                     td.id = "asignatura_" + child_snapshot.key;
                     //Añadimos id para que nos encuentre el boton que queremos borrar
                     btn_del.id = child_snapshot.key;
@@ -49,48 +48,18 @@ document.addEventListener('deviceready', function(){
                     td.innerHTML = data.name;
                     btn_del.innerHTML = "Borrar";
                     btn_del.style.float = "right";
-                    dl.innerHTML = "Descargar";
-                    
-
-                    
-                    cordova.plugins.qrcodejs.encode('TEXT_TYPE', asignatura, (base64EncodedQRImage) => {
-                        console.info('QRCodeJS response is ' + base64EncodedQRImage);
-                        dl.download = "qr.png"
-                        dl.href = base64EncodedQRImage;
-                        dl.id = "descarga_" + child_snapshot.key;
-
-                        var tabla = document.querySelector('#table');
-                        tabla.appendChild(tr);
-                        tr.appendChild(td);
-                        tr.appendChild(btn_del);
-                        tr.appendChild(dl);
-                        
-    
-                        btn_del.addEventListener('click', function(event){
-                            console.log(event);
-                            let asignatura_key = event.srcElement.value;
-                            ref.child(asignatura_key).remove();
-                        });
-                        //TODO: use your base64EncodedQRImage
-            
-            
-                        /*
-                        var storage_ref = firebase.storage().ref();
-                        var image_ref = storage_ref.child('images/' + texto + ".jpg");
-                        image_ref.putString(base64EncodedQRImage, 'data_url').then(function(snapshot) {
-                            console.log('Exito subiendo la imagen');
-                        });
-                        */
-                    }, (err) => {
-                        console.error('QRCodeJS error is ' + JSON.stringify(err));
-                    });
-                    
 
                     var tabla = document.querySelector('#table');
                     tabla.appendChild(tr);
                     tr.appendChild(td);
                     tr.appendChild(btn_del);
-                    tr.appendChild(dl);
+                    
+                    //Boton de borrado de asignatura
+                    btn_del.addEventListener('click', function(event){
+                        console.log(event);
+                        let asignatura_key = event.srcElement.value;
+                        ref.child(asignatura_key).remove();
+                    });
 
                     td.addEventListener('click',()=> {
                         console.log("Key tbl: " + td.id.split("_")[1]);
@@ -98,17 +67,11 @@ document.addEventListener('deviceready', function(){
                         toClassInterface(td.innerText, td.id.split("_")[1]);
                     });
 
-                    btn_del.addEventListener('click', function(event){
-                        console.log(event);
-                        let asignatura_key = event.srcElement.value;
-                        ref.child(asignatura_key).remove();
-                    });
                 });
 
                 ref.on('child_removed', function(child_snapshot) {
                     document.getElementById("asignatura_" + child_snapshot.key).remove();
                     document.getElementById(child_snapshot.key).remove();
-                    document.getElementById("descarga_" + child_snapshot.key).remove();
                 });
             }
         }).catch((error)=>{
@@ -162,26 +125,36 @@ document.addEventListener('deviceready', function(){
      */
     function add_class() {
         ref = db.ref("users/" + user.uid + "/asignaturas/"+ chosen_asignatura + "/lista horarios/");
-        console.log("Key add_class: " + chosen_asignatura);
+        ref_alumnos = db.ref("users/" + user.uid + "/asignaturas/"+ chosen_asignatura + "/lista clase/");
+
+        //console.log("Key add_class: " + chosen_asignatura);
+        //Fecha de la clase
         let date = document.getElementById("form2input1").value;
-        let table = document.getElementById("table_classes_participants");
-        let students = [];
-        for(let i = 1; i < table.rows.length; i++){
-            students.push({
-                Alumno: table.rows[i].cells[1].innerHTML,
-                Presentado: "NO"
-            });
-        }
+
+        //Se inserta la clase
         let clase = {
             Mes:  date.split("/")[0],
             Dia: date.split("/")[1],
             Hora: date.split("/")[2],
             Aula: document.getElementById("form2input2").value,
-            QR: "TOTO",
-            Presencia: students
         };
-        console.log("Before push");
-        ref.push(clase);
+        //console.log("Before push");
+
+        //Lista de asistencia
+        class_ref = ref.push(clase).child("lista_asistencia");
+        ref_alumnos.on('value', function (snapshot) {
+
+            console.log(snapshot.val());
+            snapshot.forEach(function (data) {
+                var student = data.val();
+                class_ref.push({
+                    niu: student.NIU,
+                    date:"",
+                    time:"",
+                    presentado: false
+                });
+            });
+        })
 
         //Updates the table by retrieving the entries, including the new one from the server
         //To prevent duplications the table will be emptied first
@@ -195,13 +168,6 @@ document.addEventListener('deviceready', function(){
         load_horario_data(chosen_asignatura);
     }
 
-    function create_qr(userid, asignatura, clase) {
-        //Crea la imagen del QR con el id del usuario, key de la asignatura y de la clase
-        cordova.plugins.qrcodejs.encode('TEXT_TYPE', userid + " " + asignatura + " " + clase, (base64EncodedQRImage) => {
-            console.info('QRCodeJS response is ' + base64EncodedQRImage);
-            return base64EncodedQRImage;
-        });
-    }
 
     /**
      * Loads the upper table with classes
@@ -307,7 +273,10 @@ document.addEventListener('deviceready', function(){
         ref.on('value', function (snapshot) {
             //let entries = [];
             console.log(snapshot.val());
+
+            //Indice de la tabla
             var index = 0;
+            //Para cada alumno se crea una fila con sus datos
             snapshot.forEach(function (data) {
                 var student = data.val();
 
