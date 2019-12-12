@@ -38,9 +38,9 @@ document.addEventListener('deviceready', function(){
                     asignatura = child_snapshot.key;
 
                     //Crear Elementos
-                    let tr = document.createElement('tr');
-                    let td = document.createElement('td');
-                    let btn_del = document.createElement('button');
+                    let tr = document.createElement('tr');              //Fila
+                    let td = document.createElement('td');              //
+                    let btn_del = document.createElement('button');     //Boton de borrado
                     td.id = "asignatura_" + child_snapshot.key;
                     //Añadimos id para que nos encuentre el boton que queremos borrar
                     btn_del.id = child_snapshot.key;
@@ -92,7 +92,7 @@ document.addEventListener('deviceready', function(){
         load_student_data(key);
         load_horario_data(key);
 
-        document.getElementById("title").textContent = "Asignatura";
+        document.getElementById("title").textContent = "Asignatura: ";
         document.getElementById("btn_nueva_asig").style.display ="none";
         document.getElementById("header_table").style.display ="none";
         document.getElementById("table").style.display ="none";
@@ -179,16 +179,13 @@ document.addEventListener('deviceready', function(){
      */
     function load_horario_data(key){
         let ref = db.ref("users/" + user.uid + "/asignaturas/" + key + "/lista horarios/");
-        return ref.once('value').then(function (snapshot) {
-            let entries = [];
-            snapshot.forEach(function () {
-                entries.push(snapshot.val());
-            });
+        var index = 0;
+        ref.on('value', function (snapshot) {
 
             let table = document.getElementById("table_classes");
 
-            for(let i = 1; i <= Object.values(entries[0]).length; i++){
-                let value = Object.values(entries[0])[i-1];
+            snapshot.forEach(function (data) {
+                clase = data.val();
                 let row = table.insertRow();
                 let entry = row.insertCell(0);
                 let mes = row.insertCell(1);
@@ -198,11 +195,11 @@ document.addEventListener('deviceready', function(){
                 let codigo = row.insertCell(5);
                 let alumnos = row.insertCell(6);
 
-                entry.innerHTML = "" + i;
-                mes.innerHTML = value.Mes;
-                dia.innerHTML = value.Dia;
-                hora.innerHTML = value.Hora;
-                aula.innerHTML = value.Aula;
+                entry.innerHTML = "" + index;
+                mes.innerHTML = clase.Mes;
+                dia.innerHTML = clase.Dia;
+                hora.innerHTML = clase.Hora;
+                aula.innerHTML = clase.Aula;
                 link_download = document.createElement("a");
                 
                 //Creacion de QR, contiene id de usuario, clave de asignatura y de clase, separados por espacios
@@ -218,7 +215,7 @@ document.addEventListener('deviceready', function(){
                 //Creation of PopUp Window
                 let popUpContainer = document.createElement("div")
                 popUpContainer.className = "overlay";
-                popUpContainer.id = "alumnos_nr" + i;
+                popUpContainer.id = "alumnos_nr" + index;
                 let divPopup = document.createElement("div");
                 divPopup.className = "popupBody";
                 let headline = document.createElement("h1");
@@ -235,13 +232,25 @@ document.addEventListener('deviceready', function(){
                 tableHeader.insertCell(2).textContent = "Presentado";
 
                 //Fill table of popUpWindow
-                for(let i = 1; i <= value.Presencia.length; i++){
+                //console.log(clase)
+                var i = 0;
+                data.child("lista_asistencia").forEach( function(data_asistencia){
+                    var asistencia = data_asistencia.val();
+                    //console.log(asistencia);
                     let row_participants = participationTable.insertRow();
                     let entry_alumnos = row_participants.insertCell(0);
+
                     entry_alumnos.innerHTML = ""+i;
-                    row_participants.insertCell(1).innerHTML = value.Presencia[i-1].Alumno;
-                    row_participants.insertCell(2).innerHTML = value.Presencia[i-1].Presentado;
-                }
+                    row_participants.insertCell(1).innerHTML = asistencia.niu;
+                    if(asistencia.presentado){
+                        row_participants.insertCell(2).innerHTML = "SI"
+                    }
+                    else{
+                        row_participants.insertCell(2).innerHTML = "NO"
+                    }
+                    i++
+                });
+
                 popUpContent.appendChild(participationTable);
                 divPopup.appendChild(headline);
                 divPopup.appendChild(cerrar);
@@ -251,10 +260,10 @@ document.addEventListener('deviceready', function(){
                 document.getElementById("class_page").appendChild(popUpContainer);
                 class_objects.push(popUpContainer);
                 let open_alumnos = document.createElement("a");
-                open_alumnos.href = "#alumnos_nr" + i;
+                open_alumnos.href = "#alumnos_nr" + index;
                 open_alumnos.text = "Mostrar";
                 alumnos.appendChild(open_alumnos);
-            }
+            });
         })
     }
 
@@ -371,7 +380,9 @@ document.addEventListener('deviceready', function(){
         document.querySelector('#page_computacion_ubicua').style.display = 'block';
     });
     */
-
+    /*
+    * Carga .csv y lo mente en la base de datos
+    */
     document.querySelector('#form1submit').addEventListener('click', function(event){
         var ref = db.ref("users/" + user.uid + "/asignaturas/");
         var asignatura_name = document.querySelector('#form1input1').value;
