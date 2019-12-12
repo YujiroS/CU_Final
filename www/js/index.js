@@ -181,11 +181,14 @@ document.addEventListener('deviceready', function(){
         let ref = db.ref("users/" + user.uid + "/asignaturas/" + key + "/lista horarios/");
         var index = 0;
         ref.on('value', function (snapshot) {
-
+            
             let table = document.getElementById("table_classes");
 
             snapshot.forEach(function (data) {
-                clase = data.val();
+                var clase = data.val();
+                var id = data.key;
+
+                
                 let row = table.insertRow();
                 let entry = row.insertCell(0);
                 let mes = row.insertCell(1);
@@ -201,9 +204,10 @@ document.addEventListener('deviceready', function(){
                 hora.innerHTML = clase.Hora;
                 aula.innerHTML = clase.Aula;
                 link_download = document.createElement("a");
+
                 
                 //Creacion de QR, contiene id de usuario, clave de asignatura y de clase, separados por espacios
-                cordova.plugins.qrcodejs.encode('TEXT_TYPE', user.uid + " " + key + " " + snapshot.key, (base64EncodedQRImage) => {
+                cordova.plugins.qrcodejs.encode('TEXT_TYPE', user.uid + " " + key + " " + id, (base64EncodedQRImage) => {
                     //console.info('QRCodeJS response is ' + base64EncodedQRImage);
                     link_download.innerHTML = "Descargar";
                     link_download.href = base64EncodedQRImage;
