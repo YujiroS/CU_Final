@@ -187,8 +187,10 @@ document.addEventListener('deviceready', function(){
         let tempEmptyTable = document.getElementById("table_classes");
         let border = tempEmptyTable.rows.length;
         for(let i = 1; i < border; i++){
+            document.getElementById("class_page").removeChild(class_objects[i-1]);
             tempEmptyTable.deleteRow(1);
         }
+        class_objects = [];
         load_horario_data(chosen_asignatura);
     }
 
