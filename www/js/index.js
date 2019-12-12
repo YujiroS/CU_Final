@@ -112,6 +112,14 @@ document.addEventListener('deviceready', function(){
         });
     }
 
+
+    /**
+     * Switches view to classInterface by collapsing the Aula Global elements
+     * and showing the class elements
+     *
+     * @param classname
+     * @param snapshot
+     */
     function toClassInterface(classname, snapshot){
         load_student_data(snapshot.key);
         load_horario_data(snapshot.key);
@@ -130,6 +138,7 @@ document.addEventListener('deviceready', function(){
         let btn_class = document.getElementById("add_class");
         btn_class.style.display ="block";
 
+        //Sets implementation for the add class popUp
         let submit_class = document.getElementById("form2submit");
         submit_class.addEventListener('click', () => {
             ref = db.ref("users/" + user.uid + "/asignaturas/"+ asignatura + "/lista horarios/");
@@ -152,6 +161,8 @@ document.addEventListener('deviceready', function(){
         };
            ref.push(clase);
 
+           //Updates the table by retrieving the entries, including the new one from the server
+            // To prevent duplications the table will be emptied first
            let tempEmptyTable = doc.getElementById("table_classes");
            for(let i = 1; i < tempEmptyTable.rows.length; i++){
                tempEmptyTable.deleteRow(1);
@@ -174,6 +185,14 @@ document.addEventListener('deviceready', function(){
         return "TODO";
     }
 
+    /**
+     * Loads the upper table with classes
+     * Loads DB data
+     * Adds each element and to show the attendance for each class a pop up window will be hardcoded for each one
+     *
+     * @param key
+     * @returns {PromiseLike<any> | Promise<any>}
+     */
     function load_horario_data(key){
         let ref = db.ref("users/" + user.uid + "/asignaturas/"+ key + "/lista horarios/");
         return ref.once('value').then(function (snapshot) {
@@ -182,9 +201,6 @@ document.addEventListener('deviceready', function(){
                 entries.push(snapshot.val());
             });
             let other = [];
-            /*entries.forEach(function () {
-                other.push(entries.val());
-            })*/
 
             let table = document.getElementById("table_classes");
 
@@ -206,6 +222,7 @@ document.addEventListener('deviceready', function(){
                 aula.innerHTML = value.Aula;
                 codigo.innerHTML = "TODO Hyperlink or download";
 
+                //Creation of PopUp Window
                 let popUpContainer = document.createElement("div")
                 popUpContainer.className = "overlay";
                 popUpContainer.id = "alumnos_nr" + i;
@@ -224,6 +241,7 @@ document.addEventListener('deviceready', function(){
                 tableHeader.insertCell(1).textContent = "Alumno";
                 tableHeader.insertCell(2).textContent = "Presentado";
 
+                //Fill table of popUpWindow
                 for(let i = 1; i <= value.Presencia.length; i++){
                     let row_participants = participationTable.insertRow();
                     let entry_alumnos = row_participants.insertCell(0);
@@ -246,6 +264,13 @@ document.addEventListener('deviceready', function(){
         })
     }
 
+    /**
+     * Loads data for the lower student table
+     * Gets data from DB
+     * And then inserts each element
+     * @param key
+     * @returns {PromiseLike<any> | Promise<any>}
+     */
     function load_student_data(key) {
         let ref = db.ref("users/" + user.uid + "/asignaturas/"+ key + "/lista clase/");
         return ref.once('value').then(function (snapshot) {
@@ -277,6 +302,11 @@ document.addEventListener('deviceready', function(){
         })
     }
 
+    /**
+     * Resets view to Aula global
+     * The table will only be collapsed,
+     * so to be able to switch to other asignatura the rows of the table will be deleted
+     */
     function toAulaGlobalInterface(){
         document.getElementById("nombre_clase").style.display ="none";
         document.getElementById("classes").style.display ="none";
