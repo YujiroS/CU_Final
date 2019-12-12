@@ -140,7 +140,7 @@ document.addEventListener('deviceready', function(){
         class_name.innerText = classname;
 
 
-        document.getElementById("classes").style.display ="block";
+        document.getElementById("class_page").style.display ="block";
         let btn_class = document.getElementById("add_class");
         btn_class.style.display ="block";
 
@@ -148,17 +148,18 @@ document.addEventListener('deviceready', function(){
         let submit_class = document.getElementById("form2submit");
         submit_class.addEventListener('click', add_class);
 
-            document.querySelector('#page_main').style.display = 'block';
-            document.querySelector('#page_login').style.display = 'none';
-        document.getElementById("participants").style.display ="block";
+        document.querySelector('#page_main').style.display = 'block';
+        document.querySelector('#page_login').style.display = 'none';
 
-        document.getElementById("to_aula").style.display ="block";
-        back_to_aula = document.getElementById("btn_to_aula");
+        let back_to_aula = document.getElementById("btn_to_aula");
         back_to_aula.addEventListener('click', () => {
             toAulaGlobalInterface();
         });
     }
 
+    /**
+     * Adds class to asignatura
+     */
     function add_class() {
         ref = db.ref("users/" + user.uid + "/asignaturas/"+ chosen_asignatura + "/lista horarios/");
         console.log("Key add_class: " + chosen_asignatura);
@@ -334,11 +335,7 @@ document.addEventListener('deviceready', function(){
      * so to be able to switch to other asignatura the rows of the table will be deleted
      */
     function toAulaGlobalInterface(){
-        document.getElementById("nombre_clase").style.display ="none";
-        document.getElementById("classes").style.display ="none";
-        document.getElementById("add_class").style.display ="none";
-        document.getElementById("participants").style.display ="none";
-        document.getElementById("to_aula").style.display ="none";
+        document.getElementById("class_page").style.display = "none";
         let submit_class = document.getElementById("form2submit");
         submit_class.removeEventListener('click', add_class);
 
