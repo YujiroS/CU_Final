@@ -70,7 +70,7 @@ document.addEventListener('deviceready', function(){
                 });
 
                 ref.on('child_removed', function(child_snapshot) {
-                    document.getElementById("asignatura_" + child_snapshot.key).remove();
+                    document.getElementById("asignatura$" + child_snapshot.key).remove();
                     document.getElementById(child_snapshot.key).remove();
                 });
             }
@@ -412,6 +412,7 @@ document.addEventListener('deviceready', function(){
      */
     function toAulaGlobalInterface(){
         document.getElementById("class_page").style.display = "none";
+        document.getElementById("nombre_clase").style.display = "none";
         let submit_class = document.getElementById("form2submit");
         submit_class.removeEventListener('click', add_class);
 
