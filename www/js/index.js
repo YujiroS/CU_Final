@@ -48,6 +48,7 @@ document.addEventListener('deviceready', function(){
                     td.innerHTML = data.name;
                     btn_del.innerHTML = "Borrar";
                     btn_del.style.float = "right";
+                    btn_del.className = "btn_borrar";
 
                     var tabla = document.querySelector('#table');
                     tabla.appendChild(tr);
@@ -252,6 +253,7 @@ document.addEventListener('deviceready', function(){
                 btn_faltas.innerHTML = "Pasar faltas"
                 btn_faltas.value = key + "," + key_clase
                 btn_faltas.id = "btn_faltas" + index;
+                btn_faltas.className = "btn_faltas_class";
                 pasar_faltas.append(btn_faltas)
                 document.querySelector('#btn_faltas' + index).addEventListener('click', function(event){
                     func_pasar_faltas(event.srcElement.value.split(",")[0], event.srcElement.value.split(",")[1])
@@ -481,27 +483,28 @@ document.addEventListener('deviceready', function(){
     * Carga .csv y lo mete en la base de datos
     */
     document.querySelector('#form1submit').addEventListener('click', function(event){
-        var ref = db.ref("users/" + user.uid + "/asignaturas/");
-        var asignatura_name = document.querySelector('#form1input1').value;
-        ref.push().set({
-            name:asignatura_name,
-            max_ausencias:document.querySelector('#form1input3').value
-        });
-        ref = db.ref("users/" + user.uid + "/asignaturas/"+ asignatura + "/lista clase/");
-        for(let i=0; i< text.length-1;i++){
-            var alumnos = {
-                NIU: text[i].split(";")[0],
-                Apellidos: text[i].split(";")[1],
-                Nombre: text[i].split(";")[2],
-                Correo: text[i].split(";")[3].replace('\r', ''),
-                Ausencias: 0
+        let form_csv = document.getElementById("form1input2");
+        if(form_csv.value != "") {
+            var ref = db.ref("users/" + user.uid + "/asignaturas/");
+            var asignatura_name = document.querySelector('#form1input1').value;
+            ref.push().set({
+                name: asignatura_name,
+                max_ausencias: document.querySelector('#form1input3').value
+            });
+            ref = db.ref("users/" + user.uid + "/asignaturas/" + asignatura + "/lista clase/");
+            for (let i = 0; i < text.length - 1; i++) {
+                var alumnos = {
+                    NIU: text[i].split(";")[0],
+                    Apellidos: text[i].split(";")[1],
+                    Nombre: text[i].split(";")[2],
+                    Correo: text[i].split(";")[3].replace('\r', ''),
+                    Ausencias: 0
+                }
+                ref.push(alumnos);
             }
-            ref.push(alumnos);
+            document.querySelector('#page_main').style.display = 'block';
+            document.querySelector('#page_login').style.display = 'none';
         }
-        document.querySelector('#page_main').style.display = 'block';
-        document.querySelector('#page_login').style.display = 'none';
-        
-        
     });
 
     document.querySelector('#form1input2').addEventListener('change', function(event){

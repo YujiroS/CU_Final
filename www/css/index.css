@@ -8,7 +8,7 @@
 
 #page_asignatura{
   display: none;
-}
+}c
 
 .encabezado{
     height: 135px;
@@ -297,6 +297,7 @@ tr:nth-child(even) {
   cursor: pointer;
   margin: 20px;
   color: white;
+    padding: 10px;
 }
 
 #nombre_clase{
@@ -329,4 +330,22 @@ tr:nth-child(even) {
 
 .scroll_table{
     margin: 10px;
+}
+
+.btn_faltas_class{
+    background-color: #0007a7;
+    border-radius: 20px;
+    cursor: pointer;
+    margin: 10px;
+    color: white;
+    padding: 10px;
+}
+
+.btn_borrar{
+    background-color: #ab0c0c;
+    border-radius: 20px;
+    cursor: pointer;
+    margin: 10px;
+    color: white;
+    padding: 10px;
 }
