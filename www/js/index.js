@@ -137,12 +137,13 @@ document.addEventListener('deviceready', function(){
             Dia: date.split("/")[1],
             Hora: date.split("/")[2],
             Aula: document.getElementById("form2input2").value,
+            Lista_revisada: false
         };
         //console.log("Before push");
 
         //Lista de asistencia
         class_ref = ref.push(clase).child("lista_asistencia");
-        ref_alumnos.on('value', function (snapshot) {
+        ref_alumnos.once('value', function (snapshot) {
 
             console.log(snapshot.val());
             snapshot.forEach(function (data) {
@@ -168,26 +169,67 @@ document.addEventListener('deviceready', function(){
         load_horario_data(chosen_asignatura);
     }
 
+    /* 
+    * Funcion que pasa las faltas de los alumnos en una clase determinada
+    *
+    */
+    function func_pasar_faltas(asignatura, clase){
+        console.log(asignatura);
+        console.log(clase);
+        var asist_ref = db.ref("users/" + user.uid + "/asignaturas/" + asignatura + "/lista horarios/" + clase + "/lista_asistencia/");
+        var asign_ref = db.ref("users/" + user.uid + "/asignaturas/" + asignatura + "/lista clase/");
+        db.ref("users/" + user.uid + "/asignaturas/" + asignatura + "/lista horarios/" + clase).once('value', function(snapshot){
+            data = snapshot.val()
+            console.log(data)
+            if(!data.Lista_revisada){
+                asist_ref.once('value', function(asist_snapshot){
+                    console.log(asist_snapshot);
+                    asist_snapshot.forEach(function(asist_data){
+                        var asistencia = asist_data.val();
+                        if(!asistencia.presentado){
+                            asign_ref.orderByChild('NIU').equalTo(asistencia.niu).once('value', function(asign_snapshot){
+                                asign_snapshot.forEach(function(asign_data){
+                                    var alumno = asign_data.val();
+                                    asign_ref.child(asign_data.key).set({
+                                        Nombre:alumno.Nombre,
+                                        Apellidos:alumno.Apellidos,
+                                        Correo:alumno.Correo,
+                                        NIU:alumno.NIU,
+                                        Ausencias:alumno.Ausencias+1
+                                    })
+            
+                                });
+                            });         
+                        } else {
+                            console.log(asistencia.niu + ": PRESENTADO")
+                        }
+                    });
+                });
+                db.ref("users/" + user.uid + "/asignaturas/" + asignatura  + "/lista horarios/" + clase).update({Lista_revisada:true});
+            }
+        });
+    }
 
     /**
      * Loads the upper table with classes
      * Loads DB data
      * Adds each element and to show the attendance for each class a pop up window will be hardcoded for each one
      *
-     * @param key
+     * @param key 
      * @returns {PromiseLike<any> | Promise<any>}
      */
     function load_horario_data(key){
         let ref = db.ref("users/" + user.uid + "/asignaturas/" + key + "/lista horarios/");
-        var index = 0;
-        ref.on('value', function (snapshot) {
-            
+
+
+        ref.once('value', function (snapshot) {
+
             let table = document.getElementById("table_classes");
+            var index = 0;
 
             snapshot.forEach(function (data) {
                 var clase = data.val();
-                var id = data.key;
-
+                var key_clase = data.key;
                 
                 let row = table.insertRow();
                 let entry = row.insertCell(0);
@@ -197,6 +239,7 @@ document.addEventListener('deviceready', function(){
                 let aula = row.insertCell(4);
                 let codigo = row.insertCell(5);
                 let alumnos = row.insertCell(6);
+                let pasar_faltas = row.insertCell(7);
 
                 entry.innerHTML = "" + index;
                 mes.innerHTML = clase.Mes;
@@ -204,10 +247,21 @@ document.addEventListener('deviceready', function(){
                 hora.innerHTML = clase.Hora;
                 aula.innerHTML = clase.Aula;
                 link_download = document.createElement("a");
+                //Boton de pasar faltas
+                var btn_faltas = document.createElement("button");
+                btn_faltas.innerHTML = "Pasar faltas"
+                btn_faltas.value = key + "," + key_clase
+                btn_faltas.id = "btn_faltas" + index;
+                pasar_faltas.append(btn_faltas)
+                document.querySelector('#btn_faltas' + index).addEventListener('click', function(event){
+                    func_pasar_faltas(event.srcElement.value.split(",")[0], event.srcElement.value.split(",")[1])
+                });
+
+
 
                 
                 //Creacion de QR, contiene id de usuario, clave de asignatura y de clase, separados por espacios
-                cordova.plugins.qrcodejs.encode('TEXT_TYPE', user.uid + " " + key + " " + id, (base64EncodedQRImage) => {
+                cordova.plugins.qrcodejs.encode('TEXT_TYPE', user.uid + " " + key + " " + key_clase, (base64EncodedQRImage) => {
                     //console.info('QRCodeJS response is ' + base64EncodedQRImage);
                     link_download.innerHTML = "Descargar";
                     link_download.href = base64EncodedQRImage;
@@ -267,6 +321,7 @@ document.addEventListener('deviceready', function(){
                 open_alumnos.href = "#alumnos_nr" + index;
                 open_alumnos.text = "Mostrar";
                 alumnos.appendChild(open_alumnos);
+                index++;
             });
         })
     }
@@ -275,7 +330,7 @@ document.addEventListener('deviceready', function(){
      * Loads data for the lower student table
      * Gets data from DB
      * And then inserts each element
-     * @param key
+     * @param key : clave de la asignatura
      * @returns {PromiseLike<any> | Promise<any>}
      */
     function load_student_data(key) {
@@ -283,7 +338,7 @@ document.addEventListener('deviceready', function(){
         let ref = db.ref("users/" + user.uid + "/asignaturas/" + key + "/lista clase/");
         let table = document.getElementById("table_classes_participants");
 
-        ref.on('value', function (snapshot) {
+        ref.once('value', function (snapshot) {
             //let entries = [];
             console.log(snapshot.val());
 
@@ -292,8 +347,9 @@ document.addEventListener('deviceready', function(){
             //Para cada alumno se crea una fila con sus datos
             snapshot.forEach(function (data) {
                 var student = data.val();
-
+                
                 let row = table.insertRow();
+                row.id = data.key;
                 let entry = row.insertCell(0)
                 let nia = row.insertCell(1);
                 let nombre = row.insertCell(2);
@@ -307,8 +363,35 @@ document.addEventListener('deviceready', function(){
                 apellido.innerHTML = student.Apellidos;
                 correo.innerHTML = student.Correo;
                 ausencias.innerHTML = student.Ausencias;
+                if(student.Ausencias > 10){
+                    row.style.backgroundColor="#ff8482"
+                }
                 index++;
             });
+
+        })
+
+        //Este evento se activa cuando se modifica un alumno y modifica la tabla en el html
+        ref.on('child_changed', function (snapshot) {
+            //let entries = [];
+            console.log(snapshot.val());
+            var student = snapshot.val();
+            console.log(student)
+            let row = document.getElementById(snapshot.key);
+            let nia = row.children[1];
+            let nombre = row.children[2];
+            let apellido = row.children[3];
+            let correo = row.children[4];
+            let ausencias = row.children[5];
+
+            nia.innerHTML = student.NIU;
+            nombre.innerHTML = student.Nombre;
+            apellido.innerHTML = student.Apellidos;
+            correo.innerHTML = student.Correo;
+            ausencias.innerHTML = student.Ausencias;
+            if(student.Ausencias > 10){
+                row.style.backgroundColor="#ff8482"
+            }
 
         })
     }
