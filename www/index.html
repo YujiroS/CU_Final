@@ -55,7 +55,11 @@
     </head>
     <body>
         <div id="page_login">
-            <button id="btn_google_login">Acceder con Google</button>
+            <div id="banner">
+                <div id="titulo_banner"><h1>Acceso a profesores</h1></div>
+                <img id="logo" src="img/uc3ml.jpg"></img>
+            </div>
+            <button class="button_f" id="btn_google_login">Acceder con Google</button>
         </div>
         <div id="page_main">
             <div class="encabezado">
@@ -146,7 +150,8 @@
                     <h1>Añadir Asignatura</h1>
                     <a id="cerrar" href="#">&times;</a>
                     <div class="popupContent">
-                        <input id="form1input1" type="text" name="nombre_asignatura" value="Nombre asignatura"><br>
+                        <input id="form1input1" type="text" name="nombre_asignatura" placeholder="Nombre asignatura"><br>
+                        <input id="form1input3" type="number" name="max_ausencias" placeholder="Ausencias maximas"><br>
                         <input id="form1input2" type="file" name="lista_clase" value="Lista de clase"><br>
                         <a id="form1submit" href="#">Generar</a>
                         <p>NOTA: Recuerda añadir el fichero que contenga la lista de alumnos de la asignatura.</p>
@@ -211,7 +216,7 @@
                     <a id="cerrar_clase" href="#">&times;</a>
                     <div class="popupContent">
                         <input id="form2input1" type="text" pattern="[0-1][0-9]/[0-3][0-9]/[0-2][0-9]:[0-5][0-9]" value="MM/DD/HH:mm"><br>
-                        <input id="form2input2" type="text" value="Aula de clase"><br>
+                        <input id="form2input2" type="text" placeholder="Aula de clase"><br>
                         <a id="form2submit" href="#">Generar</a>
                     </div>
                 </div>

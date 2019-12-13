@@ -41,7 +41,7 @@ document.addEventListener('deviceready', function(){
                     let tr = document.createElement('tr');              //Fila
                     let td = document.createElement('td');              //
                     let btn_del = document.createElement('button');     //Boton de borrado
-                    td.id = "asignatura_" + child_snapshot.key;
+                    td.id = "asignatura$" + child_snapshot.key;
                     //Añadimos id para que nos encuentre el boton que queremos borrar
                     btn_del.id = child_snapshot.key;
                     btn_del.value = child_snapshot.key;
@@ -62,9 +62,9 @@ document.addEventListener('deviceready', function(){
                     });
 
                     td.addEventListener('click',()=> {
-                        console.log("Key tbl: " + td.id.split("_")[1]);
+                        console.log("Key tbl: " + td.id.split("$")[1]);
                         console.log("Key snapshot: " + child_snapshot.key);
-                        toClassInterface(td.innerText, td.id.split("_")[1]);
+                        toClassInterface(td.innerText, td.id.split("$")[1]);
                     });
 
                 });
@@ -92,7 +92,7 @@ document.addEventListener('deviceready', function(){
         load_student_data(key);
         load_horario_data(key);
 
-        document.getElementById("title").textContent = "Asignatura: ";
+        document.getElementById("title").textContent = "Asignatura";
         document.getElementById("btn_nueva_asig").style.display ="none";
         document.getElementById("header_table").style.display ="none";
         document.getElementById("table").style.display ="none";
@@ -334,20 +334,21 @@ document.addEventListener('deviceready', function(){
      * @returns {PromiseLike<any> | Promise<any>}
      */
     function load_student_data(key) {
-
+        console.log("users/" + user.uid + "/asignaturas/" + key + "/lista clase/")
         let ref = db.ref("users/" + user.uid + "/asignaturas/" + key + "/lista clase/");
+        var asign_ref = db.ref("users/" + user.uid + "/asignaturas/" + key);
         let table = document.getElementById("table_classes_participants");
 
-        ref.once('value', function (snapshot) {
+
+        ref.once('value', function(snapshot) {
             //let entries = [];
-            console.log(snapshot.val());
 
             //Indice de la tabla
             var index = 0;
             //Para cada alumno se crea una fila con sus datos
             snapshot.forEach(function (data) {
                 var student = data.val();
-                
+
                 let row = table.insertRow();
                 row.id = data.key;
                 let entry = row.insertCell(0)
@@ -363,9 +364,13 @@ document.addEventListener('deviceready', function(){
                 apellido.innerHTML = student.Apellidos;
                 correo.innerHTML = student.Correo;
                 ausencias.innerHTML = student.Ausencias;
-                if(student.Ausencias > 10){
-                    row.style.backgroundColor="#ff8482"
-                }
+                
+                asign_ref.once('value', function(asign_data){
+                    if(student.Ausencias > asign_data.val().max_ausencias){
+                        row.style.backgroundColor="#ff8482"
+                    }
+                });
+                
                 index++;
             });
 
@@ -389,9 +394,13 @@ document.addEventListener('deviceready', function(){
             apellido.innerHTML = student.Apellidos;
             correo.innerHTML = student.Correo;
             ausencias.innerHTML = student.Ausencias;
-            if(student.Ausencias > 10){
-                row.style.backgroundColor="#ff8482"
-            }
+            
+            asign_ref.once('value', function(asign_data){
+                if(student.Ausencias > asign_data.val().max_ausencias){
+                    row.style.backgroundColor="#ff8482"
+                }
+            });
+            
 
         })
     }
@@ -468,12 +477,15 @@ document.addEventListener('deviceready', function(){
     });
     */
     /*
-    * Carga .csv y lo mente en la base de datos
+    * Carga .csv y lo mete en la base de datos
     */
     document.querySelector('#form1submit').addEventListener('click', function(event){
         var ref = db.ref("users/" + user.uid + "/asignaturas/");
         var asignatura_name = document.querySelector('#form1input1').value;
-        ref.push().set({name:asignatura_name});
+        ref.push().set({
+            name:asignatura_name,
+            max_ausencias:document.querySelector('#form1input3').value
+        });
         ref = db.ref("users/" + user.uid + "/asignaturas/"+ asignatura + "/lista clase/");
         for(let i=0; i< text.length-1;i++){
             var alumnos = {
